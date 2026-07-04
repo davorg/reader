@@ -30,3 +30,7 @@ can still be read as long as the proxy itself can reach them.
 - Works only for pages the CORS proxy is able to reach.
 - Paragraph extraction depends on well-known CSS selectors; unusual page
   structures may yield no results.
+
+## Demo
+
+See [davorg.dev/reader](https://davorg.dev/reader/).
