@@ -23,7 +23,9 @@ can still be read as long as the proxy itself can reach them.
 
 | File | Description |
 |------|-------------|
-| `index.html` | The entire application — HTML, CSS, and JavaScript in one file |
+| `index.html` | Application markup |
+| `style.css` | Styles |
+| `script.js` | Application logic |
 
 ## Limitations
 
