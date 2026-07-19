@@ -26,6 +26,8 @@
     body {
       margin: 0;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       background:
         linear-gradient(115deg, rgba(20, 108, 148, 0.12), transparent 42%),
         linear-gradient(22deg, rgba(217, 130, 43, 0.14), transparent 48%),
@@ -36,9 +38,27 @@
     }
 
     main {
+      flex: 1;
       width: min(980px, calc(100% - 32px));
       margin: 0 auto;
       padding: 56px 0;
+    }
+
+    footer {
+      padding: 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--line);
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
     }
 
     .masthead {
@@ -210,6 +230,10 @@
       <div class="article-body" id="article-body"></div>
     </article>
   </main>
+
+  <footer>
+    Created by <a href="https://davecross.co.uk/">Dave Cross</a> / Code on <a href="https://github.com/davorg/reader">GitHub</a>
+  </footer>
 
   <script>
     const form = document.querySelector("#extractor");
