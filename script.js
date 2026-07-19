@@ -75,6 +75,22 @@ function renderArticle(title, paragraphs) {
   resultEl.classList.add("visible");
 }
 
+function normalizeArticleUrl(url) {
+  let parsedUrl;
+
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    throw new Error("Please enter a valid article URL.");
+  }
+
+  if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+    throw new Error("Only HTTP and HTTPS article URLs are supported.");
+  }
+
+  return parsedUrl.toString();
+}
+
 function updateShareUrl(url) {
   const pageUrl = new URL(window.location.href);
 
@@ -111,11 +127,21 @@ async function fetchArticle(url) {
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const url = urlInput.value.trim();
-  if (!url) {
+  const rawUrl = urlInput.value.trim();
+  if (!rawUrl) {
     return;
   }
 
+  let url;
+
+  try {
+    url = normalizeArticleUrl(rawUrl);
+  } catch (error) {
+    setStatus(error.message, true);
+    return;
+  }
+
+  urlInput.value = url;
   updateShareUrl(url);
   resultEl.classList.remove("visible");
   submitButton.disabled = true;
@@ -136,8 +162,17 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
-const sharedUrl = new URL(window.location.href).searchParams.get("url");
-if (sharedUrl) {
-  urlInput.value = sharedUrl;
-  form.requestSubmit();
-}
+window.addEventListener("DOMContentLoaded", () => {
+  const sharedUrl = new URL(window.location.href).searchParams.get("url");
+  if (!sharedUrl) {
+    return;
+  }
+
+  try {
+    urlInput.value = normalizeArticleUrl(sharedUrl);
+    form.requestSubmit();
+  } catch (error) {
+    updateShareUrl("");
+    setStatus(error.message, true);
+  }
+}, { once: true });
