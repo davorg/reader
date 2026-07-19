@@ -75,6 +75,18 @@ function renderArticle(title, paragraphs) {
   resultEl.classList.add("visible");
 }
 
+function updateShareUrl(url) {
+  const pageUrl = new URL(window.location.href);
+
+  if (url) {
+    pageUrl.searchParams.set("url", url);
+  } else {
+    pageUrl.searchParams.delete("url");
+  }
+
+  window.history.replaceState({}, "", pageUrl);
+}
+
 async function fetchArticle(url) {
   const corsfix = "https://feeds.davecross.co.uk/url/";
   console.log(corsfix + url);
@@ -104,6 +116,7 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
+  updateShareUrl(url);
   resultEl.classList.remove("visible");
   submitButton.disabled = true;
   setStatus("Fetching the page...");
@@ -122,3 +135,9 @@ form.addEventListener("submit", async (event) => {
     submitButton.disabled = false;
   }
 });
+
+const sharedUrl = new URL(window.location.href).searchParams.get("url");
+if (sharedUrl) {
+  urlInput.value = sharedUrl;
+  form.requestSubmit();
+}

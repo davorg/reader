@@ -17,7 +17,9 @@ page will pull out the likely title and readable paragraphs.
 
 Open `index.html` in any modern browser — no build step or server required.
 Because the fetch is proxied, pages that block direct cross-origin requests
-can still be read as long as the proxy itself can reach them.
+can still be read as long as the proxy itself can reach them. Extracted
+stories update the page URL with a `?url=...` query parameter, so you can
+bookmark or share direct links to readable articles.
 
 ## Files
 
