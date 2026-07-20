@@ -5,6 +5,7 @@ const statusEl = document.querySelector("#status");
 const resultEl = document.querySelector("#result");
 const titleEl = document.querySelector("#article-title");
 const bodyEl = document.querySelector("#article-body");
+const linkEl = document.querySelector("#article-link");
 
 const titleSelectors = [
   'meta[property="mol:headline"]',
@@ -55,7 +56,7 @@ function getParagraphs(documentNode) {
   return [];
 }
 
-function renderArticle(title, paragraphs) {
+function renderArticle(title, paragraphs, url) {
   titleEl.textContent = title || "Untitled article";
   bodyEl.textContent = "";
 
@@ -71,6 +72,14 @@ function renderArticle(title, paragraphs) {
       bodyEl.appendChild(paragraph);
     }
   }
+
+  linkEl.textContent = "";
+  const link = document.createElement("a");
+  link.href = url;
+  link.textContent = "Link to original article";
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  linkEl.appendChild(link);
 
   resultEl.classList.add("visible");
 }
@@ -153,7 +162,7 @@ form.addEventListener("submit", async (event) => {
     const title = getText(doc, titleSelectors);
     const paragraphs = getParagraphs(doc);
 
-    renderArticle(title, paragraphs);
+    renderArticle(title, paragraphs, url);
     setStatus(`Found ${paragraphs.length} paragraph${paragraphs.length === 1 ? "" : "s"}.`);
   } catch (error) {
     setStatus(`${error.message} Browser security may block this URL unless the site allows cross-origin requests.`, true);
