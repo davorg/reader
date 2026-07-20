@@ -60,6 +60,14 @@ function renderArticle(title, paragraphs, url) {
   titleEl.textContent = title || "Untitled article";
   bodyEl.textContent = "";
 
+  linkEl.textContent = "";
+  const link = document.createElement("a");
+  link.href = url;
+  link.textContent = "Link to original article";
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  linkEl.appendChild(link);
+
   if (paragraphs.length === 0) {
     const empty = document.createElement("p");
     empty.className = "empty-note";
@@ -72,14 +80,6 @@ function renderArticle(title, paragraphs, url) {
       bodyEl.appendChild(paragraph);
     }
   }
-
-  linkEl.textContent = "";
-  const link = document.createElement("a");
-  link.href = url;
-  link.textContent = "Link to original article";
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
-  linkEl.appendChild(link);
 
   resultEl.classList.add("visible");
 }
