@@ -112,6 +112,51 @@ function updateShareUrl(url) {
   window.history.replaceState({}, "", pageUrl);
 }
 
+function getMetaCharset(bytes) {
+  const preview = new TextDecoder("windows-1252").decode(bytes.subarray(0, 1024));
+
+  for (const meta of preview.matchAll(/<meta\b[^>]*>/gi)) {
+    const charset = meta[0].match(/\bcharset\s*=\s*["']?\s*([^\s"'/>;]+)/i);
+    if (charset) {
+      return charset[1];
+    }
+  }
+
+  return "";
+}
+
+function decodeHtml(bytes, contentType) {
+  const encodings = [];
+
+  if (bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf) {
+    encodings.push("utf-8");
+  } else if (bytes[0] === 0xff && bytes[1] === 0xfe) {
+    encodings.push("utf-16le");
+  } else if (bytes[0] === 0xfe && bytes[1] === 0xff) {
+    encodings.push("utf-16be");
+  }
+
+  encodings.push(
+    contentType.match(/charset\s*=\s*["']?([^;\s"']+)/i)?.[1],
+    getMetaCharset(bytes),
+    "utf-8"
+  );
+
+  for (const encoding of encodings) {
+    if (!encoding) {
+      continue;
+    }
+
+    try {
+      return new TextDecoder(encoding).decode(bytes);
+    } catch {
+      continue;
+    }
+  }
+
+  return new TextDecoder().decode(bytes);
+}
+
 async function fetchArticle(url) {
   const corsfix = "https://feeds.davecross.co.uk/url/";
   console.log(corsfix + url);
@@ -130,7 +175,8 @@ async function fetchArticle(url) {
     throw new Error("That URL did not return an HTML page.");
   }
 
-  return response.text();
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  return decodeHtml(bytes, contentType);
 }
 
 form.addEventListener("submit", async (event) => {
